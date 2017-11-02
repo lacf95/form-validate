@@ -1,0 +1,24 @@
+{
+  "name": "lacf95/formvalidate",
+  "type": "library",
+  "description": "FormValidate was made for easy and fast form inputs validation.",
+  "keywords": ["form", "validation", "input", "validate"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Luis Adrián Chávez Fregoso",
+      "email": "biolacf@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "5.2.*"
+  },
+  "autoload": {
+      "psr-4": {
+        "lacf95\\FormValidate\\": "src/"
+      }
+  }
+}
