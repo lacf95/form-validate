@@ -13,26 +13,36 @@ namespace lacf95\FormValidate;
  * The input element is the basic object for validating
  */
 class Input {
+
 	/**
 	 * @var string
 	 */
 	private $name;
+
 	/**
 	 * @var string
 	 */
 	private $value;
+
 	/**
 	 * @var string
 	 */
 	private $type;
+
 	/**
 	 * @var int
 	 */
 	private $length;
+
 	/**
 	 * @var bool
 	 */
 	private $required;
+
+	/**
+	 * @var bool
+	 */
+	private $nullable;
 
 	/**
 	 * Input constructor.
@@ -42,11 +52,12 @@ class Input {
 	 * @param bool $required
 	 * @param int $length
 	 */
-	public function __construct ($name, $value, $type, $required = true, $length = 0) {
+	public function __construct ($name, $value, $type, $required = true, $nullable = false, $length = 0) {
 		$this->name = $name;
 		$this->value = $value;
 		$this->type = $type;
 		$this->required = $required;
+		$this->nullable = $nullable;
 		$this->length = $length;
 	}
 
@@ -109,7 +120,7 @@ class Input {
 	/**
 	 * @return bool
 	 */
-	public function getRequired () {
+	public function isRequired () {
 		return $this->required;
 	}
 
@@ -118,5 +129,19 @@ class Input {
 	 */
 	public function setRequired ($required) {
 		$this->required = $required;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isNullable () {
+		return $this->nullable;
+	}
+
+	/**
+	 * @param bool $nullable
+	 */
+	public function setNullable ($nullable) {
+		$this->nullable = $nullable;
 	}
 }

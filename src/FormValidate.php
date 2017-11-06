@@ -43,29 +43,21 @@ class FormValidate {
 	 * @return mixed
 	 */
 	public function validateInputArray ($inputs) {
-		$result = array();
+		$result = array(
+			"isValid" => true,
+			"validFields" => array(),
+			"invalidFields" => array()
+		);
 		foreach ($inputs as $input) {
-			if ($input->getRequired()) {
-				if ($this->validate($input)) {
-					$result[$input->getName()] = $this->inputArray[$input->getValue()];
-				} else {
-					return false;
-				}
+			$currentInput = $this->validateInput($input);
+			if ($currentInput["isValid"]) {
+				$result["validFields"] = array_merge($result["validFields"], $currentInput["validFields"]);
 			} else {
-				if (array_key_exists($input->getValue(), $this->inputArray)) {
-					if ($this->inputArray[$input->getValue()] === null) {
-						$result[$input->getName()] = null;
-					} else {
-						if ($this->validate($input)) {
-							$result[$input->getName()] = $this->inputArray[$input->getValue()];
-						} else {
-							return false;
-						}
-					}
-				}
+				$result["isValid"] = false;
+				$result["invalidFields"] = array_merge($result["invalidFields"], $currentInput["invalidFields"]);
 			}
 		}
-		return (count($result) > 0 ? $result : false);
+		return $result;
 	}
 
 	/**
@@ -73,16 +65,41 @@ class FormValidate {
 	 * @return bool|mixed
 	 */
 	public function validateInput (Input $input) {
-		if (array_key_exists($input->getValue(), $this->inputArray)) {
-			if ($input->getRequired()) {
-				return ($this->validate($input) ? $this->inputArray[$input->getValue()] : false);
+		$result = array(
+			"isValid" => true,
+			"validFields" => array(),
+			"invalidFields" => array()
+		);
+		if ($input->isRequired()) {
+			if ($this->validate($input)) {
+				$result["validFields"][$input->getName()] = $this->inputArray[$input->getValue()];
 			} else {
-				if ($this->inputArray[$input->getValue()] === null) {
-					return null;
+				$result["isValid"] = false;
+				$result["invalidFields"][$input->getName()] = $this->inputArray[$input->getValue()];
+			}
+		} else {
+			if (array_key_exists($input->getValue(), $this->inputArray)) {
+				if ($input->isNullable()) {
+					if ($this->inputArray[$input->getValue()] === null) {
+						$result["validFields"][$input->getName()] = null;
+					} else {
+						if ($this->validate($input)) {
+							$result["validFields"][$input->getName()] = $this->inputArray[$input->getValue()];
+						} else {
+							$result["isValid"] = false;
+							$result["invalidFields"][$input->getName()] = $this->inputArray[$input->getValue()];
+						}
+					}
+				} else {
+					if ($this->validate($input)) {
+						$result["validFields"][$input->getName()] = $this->inputArray[$input->getValue()];
+					} else {
+						$result["isValid"] = false;
+						$result["invalidFields"][$input->getName()] = $this->inputArray[$input->getValue()];
+					}
 				}
-				return ($this->validate($input) ? $this->inputArray[$input->getValue()] : false);
 			}
 		}
-		return false;
+		return $result;
 	}
 }
